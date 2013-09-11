@@ -282,7 +282,8 @@ def separate_layers(root):
 						root.layer_array[index_x, index_y, int(separation_array[int(root.layer_array[index_x, index_y, layer])])] = root.layer_array[index_x, index_y, layer]
 						if layer != int(separation_array[int(root.layer_array[index_x, index_y, layer])]):
 							root.layer_array[index_x, index_y, layer] = 0
-						
+	
+	select_layer(root, root.current_layer)
 				
 def generate_preview(root):
 	pass
