@@ -273,19 +273,24 @@ def build_tile_selectors(root):
 		
 	# Build Frame, label and spacer for tile selectors
 	VRTileSelection = ttk.Separator(root, orient='vertical')
-	VRTileSelection.grid(column=2, row=0, rowspan=4, pady=6, sticky='NS')
+	VRTileSelection.grid(column=1, row=0, rowspan=2, padx=2, sticky='NS')
 	
-	TileSelectorFrame = tkinter.Frame(root, pady=10)
-	TileSelectorFrame.grid(column=3, row=0, rowspan=4, sticky='NW')
+	TileSelectorFrame = tkinter.Frame(root)
+	TileSelectorFrame.grid(column=2, row=1, sticky='NESW')
 	
-	TileSelectorLabel = tkinter.Label(TileSelectorFrame, text="Tile Sheet")
-	TileSelectorLabel.grid(column=0, row=0)
+	TileSelectorFrame.columnconfigure(0, weight=1)
+	TileSelectorFrame.rowconfigure(0, weight=1)
 	
-	HRTileSelection = ttk.Separator(TileSelectorFrame, orient='horizontal')
-	HRTileSelection.grid(column=0, row=1, pady=6, sticky='EW')
+	TileScrollBar = tkinter.Scrollbar(TileSelectorFrame)
+	TileScrollBar.grid(column=1, row=0, padx=5, rowspan=2, sticky='NS')
 	
-	TileSelectorButtonFrame = tkinter.Frame(TileSelectorFrame, padx=5, pady=5)
-	TileSelectorButtonFrame.grid(column=0, row=2, sticky='NW')
+	TileCanvas = tkinter.Canvas(TileSelectorFrame, yscrollcommand=TileScrollBar.set, bg='gray')
+	TileCanvas.grid(column=0, row=0, sticky='NESW')
+	
+	TileScrollBar.config(command=TileCanvas.yview)
+	
+	TileButtonFrame = tkinter.Frame(TileCanvas)
+	TileButtonFrame.grid(column=0, row=1, sticky='NW')
 	
 	# Allocate array for storing dynamic button array
 	
@@ -293,11 +298,15 @@ def build_tile_selectors(root):
 	
 	# Construct buttons with unique callbacks
 	for index in range(root.tilesheet_size):
-		newButton = tkinter.Button(TileSelectorButtonFrame, text=str(index), image=root.tiles[index], command=lambda tile_num=index: set_tile(root, tile_num))
+		newButton = tkinter.Button(TileButtonFrame, text=str(index), image=root.tiles[index], command=lambda tile_num=index: set_tile(root, tile_num))
 		root.tilebuttons.append(newButton)
-		root.tilebuttons[index].grid(column=int(index%root.tilesheet_width), row=int(index/root.tilesheet_width))
+		root.tilebuttons[index].grid(column=int(index%root.tilesheet_width), row=int(index/root.tilesheet_width), sticky='NW')
 	
+	TileCanvas.create_window(0, 0, anchor='nw', window=TileButtonFrame)
+	TileButtonFrame.update_idletasks()
+	TileCanvas.config(scrollregion=TileCanvas.bbox("all"))
 	# Load images from base map layer
+	TileCanvas.config(width=(root.tilesheet_width*(root.tile_size+6)))
 	select_layer(root, 0)
 	
 	print("\tDone.")
