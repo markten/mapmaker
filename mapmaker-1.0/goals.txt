@@ -1,0 +1,8 @@
+Features to add:
+ - layer separation
+ - status bar at bottom to show current map file and tilesheet
+ - generate map preview
+ - Placing sections of tilesheet
+
+Features to improve:
+ - tilesheet support
